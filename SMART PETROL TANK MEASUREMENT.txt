@@ -1,0 +1,48 @@
+#include <LiquidCrystal.h>
+
+// Define ultrasonic sensor pins
+const int trigPin = 9;
+const int echoPin = 10;
+
+// Define LCD pins
+const int rs = 7;
+const int en = 6;
+const int d4 = 5;
+const int d5 = 4;
+const int d6 = 3;
+const int d7 = 2;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+
+void setup() {
+  // Initialize LCD and ultrasonic sensor pins
+  lcd.begin(16, 2);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+}
+
+void loop() {
+  // Send ultrasonic pulse
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  // Measure echo duration
+  long duration = pulseIn(echoPin, HIGH);
+
+  // Calculate distance in cm (assume speed of sound as 343 m/s)
+  float distance_cm = duration * 0.0343 / 2.0;
+
+  // Convert distance to liters (example conversion factor)
+  float petrol_liters = map(distance_cm, 0, 100, 0, 50); // Adjust conversion factor as needed
+
+  // Display petrol level on LCD
+  lcd.setCursor(0, 0);
+  lcd.print("Petrol Level:");
+  lcd.setCursor(0, 1);
+  lcd.print(petrol_liters);
+  lcd.print(" Liters");
+
+  delay(1000); // Update display every 1 second
+}
